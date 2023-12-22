@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/createQuiz.css"/>
+</head>
+<body>
+  <header>
+    <h1><%= title %></h1>
+  </header>
+
+  <nav>
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/addQuestion">Add Question</a>
+    <a href="/admin/questions">Question List</a>
+  </nav>
+
+  <section>
+    <form action="/admin/createQuiz" method="post">
+      <!-- Add input fields for quiz details (title, description, timeLimit, difficulty, questions) -->
+
+      <label for="timeLimit">Time Limit (in minutes):</label>
+      <input type="number" name="timeLimit" required>
+
+      <label for="difficulty">Difficulty:</label>
+      <select name="difficulty" required>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+
+      <button type="submit">Create Quiz</button>
+    </form>
+  </section>
+
+  <footer>
+    <!-- Add footer content as needed -->
+  </footer>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= 'Profile' %></title>
+  <link rel="stylesheet" href="/stylesheets/profile.css" />
+</head>
+<body>
+  <header>
+    <h1><%= title %></h1>
+  </header>
+
+  <section>
+    <h2>Welcome to your profile, <%= user.fullname %>!</h2>
+
+    <!-- Display user information -->
+    <p>Email: <%= user.email %></p>
+    <p>Gender: <%= user.gender %></p>
+    <p>Phone: <%= user.phone %></p>
+    <p>Address: <%= user.address %></p>
+
+    <form action="/quizTaking" method="get">
+      <button type="submit" class="start-quiz-button">Start Quiz</button>
+    </form>
+  </section>
+
+  <footer>
+    <!-- Add footer content as needed -->
+  </footer>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // Add an event listener to the start quiz button
+  const startQuizButton = document.querySelector('.start-quiz-button');
+  if (startQuizButton) {
+    startQuizButton.addEventListener('click', function (event) {
+      // Prevent the default behavior of the anchor tag
+      event.preventDefault();
+
+      // Redirect to the quizTakingRoute
+      window.location.href = '/quizTaking';
+    });
+  }
+});
+  </script>
+</body>
+</html>

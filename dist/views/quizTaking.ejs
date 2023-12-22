@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/stylesheets/quizTaking.css" />
+</head>
+<body>
+  <header>
+    <h1><%= quiz.title %></h1>
+  </header>
+
+  <section>
+    <!-- Display quiz instructions, timer, etc. -->
+    <p>Instructions: <%= quiz.description %></p>
+    <p>Time Limit: <%= quiz.timeLimit %> minutes</p>
+    <!-- Add more quiz details as needed -->
+  </section>
+
+  <section>
+    <!-- Display quiz questions and options -->
+    <form action="/quiz/submit" method="post">
+      <% for (const question of quizQuestions) { %>
+        <div class="question">
+          <p><%= question.text %></p>
+          <% for (const option of question.options) { %>
+            <label>
+              <input type="radio" name="<%= question.id %>" value="<%= option %>">
+              <%= option %>
+            </label>
+          <% } %>
+        </div>
+      <% } %>
+      <button type="submit">Submit Quiz</button>
+    </form>
+  </section>
+
+  <footer>
+    <!-- Add footer content as needed -->
+  </footer>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/stylesheets/addQuestion.css" />
+<h2><%= title %></h2>
+
+<form action="/admin/addQuestion" method="post">
+  
+  <label for="text">Question Text:</label>
+  <input type="text" name="text" required>
+
+  <label for="options">Options:</label>
+  <input type="text" name="options" required>
+
+  <label for="correctAnswer">Correct Answer:</label>
+  <input type="text" name="correctAnswer" required>
+
+  <label for="category">Category:</label>
+  <input type="text" name="category" required>
+
+  <label for="dificulty">Difficulty:</label>
+  <input type="text" name="difficulty" required>
+
+  <button type="submit">Add Question</button>
+</form>
+
+<script>
+  function showSuccessMessage() {
+    alert('Question added successfully!');
+  }
+</script>

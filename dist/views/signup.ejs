@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../stylesheets/signup.css">
+  <title>Sign Up</title>
+</head>
+<body>
+  <header>
+    <h1>Sign Up</h1>
+  </header>
+  <form action="/signup" method="post">
+    <label for="fullname">Full Name:</label>
+    <input type="text" id="fullname" name="fullname" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <!-- Add more fields as needed -->
+
+    <button type="submit">Sign Up</button>
+    <p class="logs">already a user? click <a href="/login" class="a-train">here</a> to login</p>
+  </form>
+    
+</body>
+</html>

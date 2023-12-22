@@ -1,0 +1,168 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Arial', sans-serif;
+  background: url('../images/Triva.png') no-repeat center center fixed;
+  background-size: contain; 
+  text-align: center;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+@keyframes snakeEffect {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(1vw);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(-1vw);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.force {
+  cursor: pointer;
+}
+.force:hover {
+  animation: snakeEffect 2s linear infinite;
+}
+.navbar {
+  background-color: rgba(0, 0, 0, 0.8);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 10px;
+}
+.navbar ul {
+  display: flex;
+  list-style-type: none;
+}
+.navbar ul.active {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.navbar ul li {
+  font-size: 16px;
+  transition: all 2.5s ease;
+  padding: 5px auto;
+}
+/* styling for the unordered list */
+ul {
+  display: flex;
+  justify-content: flex-end;
+  list-style-type: none;
+}
+/*styling for the list items*/
+li {
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+/* styling for the link list items*/  
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}  
+/* styling on hover of the link list items*/
+li a:hover {
+  background-color: black;
+}
+.menu-toggle {
+  cursor: pointer;
+  display: none;
+}
+.menu-open .bar.bar1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+.menu-open .bar.bar2 {
+  opacity: 0;
+}
+.menu-open .bar.bar3 {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+.bar {
+  width: 30px;
+  height: 3px;
+  background-color: #fff;
+  margin: 8px 0;
+  transition: 0.4s;
+}
+.btn {
+  align-self: center;
+  border-radius: 5px;
+  background-color: black;
+  background-image: url(/Images/X.jpeg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-family: sans-serif;
+  padding: 10px 20px;
+  margin: 10px auto;
+  margin-left: 20px; 
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-indent: -9999px;
+  height: 20px;
+  width: 30px;
+}
+header {
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 60px;
+}
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+p {
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 5px;
+  color: white;
+  font-size: 1em;
+  margin: 180px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+p:hover {
+  background-color: rgba(15, 14, 14, 0.8);
+}
+.cta-button {
+  background-color: black;
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 1.2em;
+  padding: 10px 20px;
+  margin-bottom: 180px;
+  text-decoration: none;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+.cta-button:hover {
+  background-color: #c17c32;
+}
