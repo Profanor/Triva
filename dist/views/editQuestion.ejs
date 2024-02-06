@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Question</title>
+  <link rel="stylesheet" href="/stylesheets/editQuestion.css">
+</head>
+<body>
+  <h1>Edit Question</h1>
+
+  <a href="/admin/questionList"><button>Back to Question List</button></a>
+    <br>
+  <form action="/admin/updateQuestion/<%= question.id %>" method="post" id="editQuestionForm">
+    <label for="text">Question Text:</label>
+    <input type="text" name="text" value="<%= question.text %>" required>
+
+    <label for="options">Options:</label>
+    <textarea name="options" rows="4" required>
+        <% if (Array.isArray(question.options)) { %>
+            <%= question.options.join('\n') %>
+            <% } %>
+    </textarea>
+    <br>
+
+    <label for="correctAnswer">Correct Answer:</label>
+    <select name="correctAnswer" required>
+      <% question.options.forEach((option, index) => { %>
+        <option value="<%= option %>" <%= question.correctAnswer === option ? 'selected' : '' %>>
+          Option <%= String.fromCharCode(65 + index) %>: <%= option %>
+        </option>
+      <% }) %>
+    </select>
+    <br>
+
+    <label for="category">Category:</label>
+    <input type="text" name="category" value="<%= question.category %>" required>
+    <br>
+
+    <label for="difficulty">Difficulty:</label>
+    <input type="text" name="difficulty" value="<%= question.difficulty %>" required>
+    <br>
+
+    <button type="submit">Update Question</button>
+  </form>
+
+</body>
+</html>

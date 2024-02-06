@@ -22,7 +22,7 @@ QuizHistory.init({
         allowNull: false,
     },
     answers: {
-        type: DataTypes.JSONB, // Store user answers as a JSON object or array
+        type: DataTypes.JSONB, 
     },
 }, {
     sequelize,

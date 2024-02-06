@@ -20,7 +20,7 @@
     <p>Phone: <%= user.phone %></p>
     <p>Address: <%= user.address %></p>
 
-    <form action="/quizTaking" method="get">
+    <form action="/level" method="post">
       <button type="submit" class="start-quiz-button">Start Quiz</button>
     </form>
   </section>
@@ -37,8 +37,8 @@
       // Prevent the default behavior of the anchor tag
       event.preventDefault();
 
-      // Redirect to the quizTakingRoute
-      window.location.href = '/quizTaking';
+      // Redirect to the difficulty level
+      window.location.href = '/level';
     });
   }
 });

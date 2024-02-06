@@ -43,7 +43,7 @@ export const updateSettings = async (req: UserRequest, res: Response): Promise<v
     const updatedUser = await user.update({
       fullname,
       email,
-      password, // You may want to handle password updates separately
+      password,
       gender,
       phone,
       address,

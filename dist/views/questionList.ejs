@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question List</title>
+  <link rel="stylesheet" href="/stylesheets/questionList.css">
+</head>
+<body>
+  <h1>Question List</h1>
+
+  <a href="/admin"><button>Back</button></a>
+
+  <% if (questions.length > 0) { %>
+    <ol>
+      <% questions.forEach((question) => { %>
+        <li>
+          <strong><%= question.text %></strong>
+          <ul>
+            <% if (Array.isArray(question.options)) { %>
+              <% question.options.forEach((option) => { %>
+                <li><%= option %></li>
+              <% }) %>
+            <% } else { %>
+              <li><%= question.options %></li>
+            <% } %>
+          </ul>
+          <p>Category: <%= question.category %></p>
+          <p>Correct Answer: <%= question.correctAnswer %></p>
+          <p>Difficulty: <%= question.difficulty %></p>
+          <br>
+          <a href="/admin/editQuestion/<%= question.id %>"><button class="btn">Edit</button></a> 
+        </li>
+      <% }) %>
+      </ol>
+  <% } else { %>
+    <p>No questions available.</p>
+  <% } %>
+
+</body>
+</html>
+
+

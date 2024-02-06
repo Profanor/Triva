@@ -1,6 +1,5 @@
 import express, { Response, Request } from 'express';
 import User from '../model/User';
-import QuizHistory from '../model/QuizHistory';
 
 const router = express.Router();
 
@@ -17,7 +16,6 @@ const getUser = async (email: string): Promise<User | null> => {
 router.get('/profile', async (req: Request, res: Response) => {
         try {
             const { email } = req.query;
-            console.log('Email:', email);
 
             if (!email || typeof email !== 'string') {
                 return res.status(400).json('Email parameter required');

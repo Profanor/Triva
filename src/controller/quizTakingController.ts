@@ -1,39 +1,29 @@
 import { Request, Response } from 'express';
-import Quiz from '../model/Quiz';
-import User from '../model/User';
 import QuizHistory from '../model/QuizHistory';
-import generateQuizQuestions from '../utils/quizUtils';
+import Question from '../model/Question';
 
-// Extend the Express Request type to include a user property
-interface AuthenticatedRequest extends Request {
-    user: User;
-  }
+export const getQuestionsByDifficulty = async (req: Request, res: Response): Promise<void> => {
+    try {       
+        const { difficulty } = req.body;
 
-export const startQuiz = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-    try {
-        const userId = req.user.id;
-        const quizId = req.params.quizId;
+        // Find the quiz based on the selected difficulty
+        const questions = await Question.findAll({
+            where: { difficulty },
+        });        
 
-        // Fetch the quiz
-        const quiz = await Quiz.findByPk(quizId);
-        
-        if (!quiz) {
-            res.status(404).json({ error: 'Quiz not found' });
+        if (questions.length === 0) {
+            res.status(404).json({ message: 'Questions not found for the specified difficulty' });
             return;
         }
 
-        const quizQuestions = generateQuizQuestions(quiz);
-
         // Save the quiz in progress to the user's quiz history
         await QuizHistory.create({
-            userId,
-            quizId,
             status: 'in-progress',
             answers: [], 
             startTime: new Date(),
         });
 
-        res.status(200).json({ message: 'Quiz started', quiz: quizQuestions });
+        res.status(200).json({ questions });
     } catch (error) {
         console.error('Error starting quiz:', error);
         res.status(500).json({ error: 'Internal server error' });

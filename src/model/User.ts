@@ -1,8 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../utils/sequelize';
 
 interface UserAttributes {
-  id?: number;
+  id: number;
   fullname: string;
   email: string;
   password: string;
@@ -25,6 +26,12 @@ class User extends Model<UserAttributes> {
 
  User.init(
   {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: () => uuidv4(),
+      unique: true
+    },
     fullname: {
     type: DataTypes.STRING,
     allowNull: false,

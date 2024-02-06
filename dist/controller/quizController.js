@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQuizQuestions = exports.createQuiz = void 0;
 const Quiz_1 = __importDefault(require("../model/Quiz"));
+const Question_1 = __importDefault(require("../model/Question"));
 const quizUtils_1 = __importDefault(require("../utils/quizUtils"));
 const createQuiz = async (req, res) => {
     try {
@@ -16,7 +17,11 @@ const createQuiz = async (req, res) => {
             timeLimit,
             difficulty,
         });
-        const quizQuestions = await (0, quizUtils_1.default)(newQuiz);
+        //fetch questions based on difficulty
+        const questions = await Question_1.default.findAll({
+            where: { difficulty },
+        });
+        console.log('Questions', questions);
         res.status(201).json({ message: 'Quiz created successfully', quiz: newQuiz });
     }
     catch (error) {
@@ -27,10 +32,14 @@ const createQuiz = async (req, res) => {
 exports.createQuiz = createQuiz;
 const getQuizQuestions = async (req, res) => {
     try {
-        const quizId = req.params.id;
-        // Fetch the quiz
-        const quiz = await Quiz_1.default.findByPk(quizId);
+        const quizId = Number(req.params.id); //incase the quizid is a string in the url params
+        const difficulty = req.params.difficulty;
+        // Fetch the quiz and its associated questions
+        const quiz = await Quiz_1.default.findByPk(quizId, {
+            include: Question_1.default
+        });
         if (!quiz) {
+            console.error(`Quiz with ID ${quizId} not found.`);
             res.status(404).json({ error: 'Quiz not found' });
             return;
         }

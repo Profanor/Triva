@@ -9,14 +9,10 @@ const Question_1 = __importDefault(require("./Question"));
 class Quiz extends sequelize_1.Model {
 }
 Quiz.init({
-    id: {
-        type: sequelize_1.DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
     timeLimit: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 20,
     },
     difficulty: {
         type: sequelize_1.DataTypes.STRING,
@@ -26,7 +22,5 @@ Quiz.init({
     sequelize: sequelize_2.default,
     modelName: 'Quiz',
 });
-// Establish an association with the Question model
-Quiz.belongsToMany(Question_1.default, { through: 'QuizQuestion' });
-Question_1.default.belongsToMany(Quiz, { through: 'QuizQuestion' });
+Quiz.hasMany(Question_1.default, { foreignKey: 'quizId' });
 exports.default = Quiz;

@@ -1,43 +1,28 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Sequelize } from 'sequelize';
 import sequelize from '../utils/sequelize';
 import Question from './Question';
 
-interface QuizAttributes {
-  id: number;
-  timeLimit: string;
-  difficulty: string;
-}
-
-class Quiz extends Model<QuizAttributes> {
-  public id!: number;
-  public timeLimit!: string;
+class Quiz extends Model {
+  public timeLimit!: number;
   public difficulty!: string;
-
-  // @ts-ignore
-  // public setQuestions: (questions: Question[]) => Promise<Quiz[]>;
 }
 
-Quiz.init({
-    id: {
+Quiz.init(
+  {
+    timeLimit: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+      allowNull: false,
+      defaultValue: 20,
     },
-      timeLimit: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      difficulty: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-}, {
+    difficulty: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
     sequelize,
     modelName: 'Quiz',
-});
-
-// Establish an association with the Question model
-Quiz.belongsToMany(Question, { through: 'QuizQuestion' });
-Question.belongsToMany(Quiz, { through: 'QuizQuestion' });
-
+  }
+);
+Quiz.hasMany(Question, { foreignKey: 'quizId' });
 export default Quiz;

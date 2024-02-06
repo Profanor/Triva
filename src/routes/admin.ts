@@ -4,8 +4,9 @@ import {
   showAddQuestionForm,
   addQuestion,
   showQuestionList,
-  renderQuizForm,
-  createQuiz
+  showQuizForm,
+  createQuiz,
+  editQuestion
 } from '../controller/adminController';
 
 const router = express.Router();
@@ -22,8 +23,10 @@ router.post('/admin/addQuestion', addQuestion);
 // Display a list of existing questions
 router.get('/admin/questionList', showQuestionList);
 
+router.get('/admin/editQuestion/:questionId', editQuestion)
+
 // display the quiz form
-router.get('/admin/createQuiz', renderQuizForm);
+router.get('/admin/createQuiz', showQuizForm);
 
 // handle quiz creation
 router.post('/admin/createQuiz', createQuiz);

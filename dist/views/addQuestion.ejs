@@ -1,19 +1,24 @@
 <link rel="stylesheet" href="/stylesheets/addQuestion.css" />
 <h2><%= title %></h2>
 
-<form action="/admin/addQuestion" method="post">
+<form action="/admin/addQuestion" method="post" id="addQuestionForm">
   
   <label for="text">Question Text:</label>
   <input type="text" name="text" required>
+  <br>
 
   <label for="options">Options:</label>
-  <input type="text" name="options" required>
+  <textarea name="options" id="optionsTextarea" rows="4" required></textarea>
+  <br>
 
   <label for="correctAnswer">Correct Answer:</label>
-  <input type="text" name="correctAnswer" required>
+  <select name="correctAnswer" id="correctAnswerSelect" required>
+</select>
+  <br>
 
   <label for="category">Category:</label>
   <input type="text" name="category" required>
+  <br>
 
   <label for="dificulty">Difficulty:</label>
   <input type="text" name="difficulty" required>
@@ -21,8 +26,31 @@
   <button type="submit">Add Question</button>
 </form>
 
-<script>
-  function showSuccessMessage() {
-    alert('Question added successfully!');
-  }
+ <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get references to the textarea and select elements
+    const optionsTextarea = document.getElementById('optionsTextarea');
+    const correctAnswerSelect = document.getElementById('correctAnswerSelect');
+
+    // Listen for changes in the textarea
+    optionsTextarea.addEventListener('input', function () {
+      
+      // Split options by line break
+      const optionsArray = optionsTextarea.value.split(/\n/);
+
+      // Clear existing options
+      correctAnswerSelect.innerHTML = '';
+
+      // Populate select options
+      optionsArray.forEach((option, index) => {
+        const optionValue = option.trim();
+        if (optionValue !== '') {
+          const optionElement = document.createElement('option');
+          optionElement.value = optionValue;
+          optionElement.text = `Option ${String.fromCharCode(65 + index)}: ${optionValue}`;
+          correctAnswerSelect.add(optionElement);
+        }
+      });
+    });
+  });
 </script>

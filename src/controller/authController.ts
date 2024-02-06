@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
+import { Request, Response } from "express";
 import User, { UserAttributes } from '../model/User';
-import QuizHistory from "../model/QuizHistory";
 import { comparePassword, hashPassword } from '../utils/password';
+import QuizHistory from "../model/QuizHistory";
 
 // Define a user interface to augment the Request type
 interface UserRequest extends Request {
@@ -40,7 +40,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
             address,
         } as UserAttributes);
 
-        res.status(201).json({ message: 'User registered successfully', user: newUser });
+        res.redirect('/login');
+        // res.status(201).json({ message: 'User registered successfully', user: newUser });
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).json({error: 'Internal server error' });
@@ -48,33 +49,38 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 };
 
 //login user
-export const loginUser = async (req: UserRequest, res: Response): Promise<void> => {
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
         //check if the user email exists
         const user = await User.findOne({ where: { email } });
+        
         if(!user) {
-         res.status(401).json({ error: 'Invalid email or password' });
-         return;
+          return res.render('login', { title: 'Login', error: 'Invalid credentials' });
         }
 
         //check if password is correct
         const isPasswordValid = await comparePassword(password, user.password) ;
+        
         if (!isPasswordValid) {
-         res.status(401).json({ error: 'Invalid email or password' });
-         return;
+          return res.render('login', { title: 'Login', error: 'Invalid credentials' });
         }
 
         // Create and send JWT token
         const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, {
-            expiresIn: tokenExpiration,
-      });
-  
-      res.cookie('jwt', token, { httpOnly: true });
-      res.status(200).json({ message: 'Login successful', user });
+          expiresIn: tokenExpiration,
+    });
+
+         res.cookie('jwt', token, { httpOnly: true });
+
+        //passwords match, redirect to user profile
+        res.redirect(`/profile?email=${user.email}`);
+        console.log('logged in successfully');
+
+      // res.status(200).json({ message: 'Login successful', user });
     } catch (error) {
-      console.error('Error logging in user:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error during login:', error);
+      res.render('login', { title: 'Login', error: 'An error occurred during login' });
     }
   };
 
@@ -182,3 +188,11 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
+  export default {
+    registerUser,
+    loginUser,
+    updateUserProfile,
+    viewQuizHistory,
+    logoutUser
+  }

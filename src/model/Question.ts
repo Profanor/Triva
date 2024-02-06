@@ -8,7 +8,10 @@ class Question extends Model {
   public category!: string;
   public correctAnswer!: string;
   public difficulty!: string;
-  public QuizId!: number;
+
+  static associate (): void {
+    Question.belongsTo(Quiz, { foreignKey: 'quizId' });
+  }
 }
 
 Question.init({
@@ -17,7 +20,7 @@ Question.init({
         allowNull: false,
     },
     options: {
-        type: DataTypes.JSONB, // Store answer choices as a JSON object or array
+        type: DataTypes.JSONB,
         allowNull: false,
     },
     category: {
@@ -32,21 +35,9 @@ Question.init({
         type: DataTypes.STRING,
         allowNull: false,
       },
-      QuizId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Quiz,
-            key: 'id',
-        },
-    },  
 }, {
     sequelize,
     modelName: 'Question',
 });
-
-// Establish an association with the Quiz model
-Question.belongsToMany(Quiz, { through: 'QuizQuestion' });
-Quiz.belongsToMany(Question, { through: 'QuizQuestion' });
 
 export default Question;

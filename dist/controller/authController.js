@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.logoutUser = exports.viewQuizHistory = exports.changePassword = exports.updateUserProfile = exports.loginUser = exports.registerUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../model/User"));
-const QuizHistory_1 = __importDefault(require("../model/QuizHistory"));
 const password_1 = require("../utils/password");
+const QuizHistory_1 = __importDefault(require("../model/QuizHistory"));
 const secretKey = process.env.JWT_SECRET || 'default_secret';
 const tokenExpiration = '1h';
 //register a new user
@@ -31,7 +31,8 @@ const registerUser = async (req, res) => {
             phone,
             address,
         });
-        res.status(201).json({ message: 'User registered successfully', user: newUser });
+        res.redirect('/login');
+        // res.status(201).json({ message: 'User registered successfully', user: newUser });
     }
     catch (error) {
         console.error('Error registering user:', error);
@@ -46,25 +47,26 @@ const loginUser = async (req, res) => {
         //check if the user email exists
         const user = await User_1.default.findOne({ where: { email } });
         if (!user) {
-            res.status(401).json({ error: 'Invalid email or password' });
-            return;
+            return res.render('login', { title: 'Login', error: 'Invalid credentials' });
         }
         //check if password is correct
         const isPasswordValid = await (0, password_1.comparePassword)(password, user.password);
         if (!isPasswordValid) {
-            res.status(401).json({ error: 'Invalid email or password' });
-            return;
+            return res.render('login', { title: 'Login', error: 'Invalid credentials' });
         }
         // Create and send JWT token
         const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email }, secretKey, {
             expiresIn: tokenExpiration,
         });
         res.cookie('jwt', token, { httpOnly: true });
-        res.status(200).json({ message: 'Login successful', user });
+        //passwords match, redirect to user profile
+        res.redirect(`/profile?email=${user.email}`);
+        console.log('logged in successfully');
+        // res.status(200).json({ message: 'Login successful', user });
     }
     catch (error) {
-        console.error('Error logging in user:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error during login:', error);
+        res.render('login', { title: 'Login', error: 'An error occurred during login' });
     }
 };
 exports.loginUser = loginUser;
@@ -157,3 +159,10 @@ const logoutUser = async (req, res) => {
     }
 };
 exports.logoutUser = logoutUser;
+exports.default = {
+    registerUser: exports.registerUser,
+    loginUser: exports.loginUser,
+    updateUserProfile: exports.updateUserProfile,
+    viewQuizHistory: exports.viewQuizHistory,
+    logoutUser: exports.logoutUser
+};

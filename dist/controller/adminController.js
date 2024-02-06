@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteQuiz = exports.editQuiz = exports.createQuiz = exports.renderQuizForm = exports.showQuestionList = exports.addQuestion = exports.showAddQuestionForm = exports.showDashboard = void 0;
+exports.deleteQuiz = exports.editQuiz = exports.createQuiz = exports.showQuestionList = exports.editQuestion = exports.addQuestion = exports.showQuizForm = exports.showAddQuestionForm = exports.showDashboard = void 0;
 const Quiz_1 = __importDefault(require("../model/Quiz"));
 const Question_1 = __importDefault(require("../model/Question"));
 // display admin dashboard 
@@ -13,15 +13,32 @@ const showDashboard = (req, res) => {
 exports.showDashboard = showDashboard;
 // display form for adding a new question
 const showAddQuestionForm = (req, res) => {
-    res.render('addQuestion', { title: 'Add Question Form' });
+    const quizId = req.params.quizId;
+    res.render('addQuestion', { title: 'Add Question Form', quizId });
 };
 exports.showAddQuestionForm = showAddQuestionForm;
+const showQuizForm = (req, res) => {
+    res.render('createQuiz', { title: 'Quiz Form' });
+};
+exports.showQuizForm = showQuizForm;
 // Handle the submission of a new question
 const addQuestion = async (req, res) => {
     try {
         // Extract question details from the request body
         const { text, options, category, correctAnswer, difficulty } = req.body;
-        // TODO: Validate and save the question details to the database
+        console.log('Req body', req.body);
+        // Check if a quiz with the specified difficulty exists
+        let quiz = await Quiz_1.default.findOne({ where: { difficulty } });
+        // If no quiz exists for the specified difficulty, create a new one
+        if (!quiz) {
+            const { timeLimit, difficulty } = req.body;
+            quiz = await Quiz_1.default.create({ timeLimit, difficulty });
+            if (!quiz) {
+                res.status(500).json({ error: 'failed to create quiz' });
+                return;
+            }
+        }
+        // associate the new question with the existing quiz
         const newQuestion = await Question_1.default.create({
             text,
             options,
@@ -29,21 +46,58 @@ const addQuestion = async (req, res) => {
             correctAnswer,
             difficulty,
         });
-        const successMessage = 'Question added successfully';
-        res.redirect('/admin');
+        console.log('Question created successfully:', newQuestion);
+        res.redirect('/admin/createQuiz');
     }
     catch (error) {
         console.error('Error adding question:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({
+            error: 'Internal server error',
+            details: error.message,
+            requestBody: req.body
+        });
     }
 };
 exports.addQuestion = addQuestion;
+// logic for editing questions
+const editQuestion = async (req, res) => {
+    try {
+        const { questionId } = req.params;
+        //fetch the existing question from the database
+        const existingQuestion = await Question_1.default.findByPk(questionId);
+        if (!existingQuestion) {
+            res.status(404).json({ error: 'Question not found' });
+            return;
+        }
+        // Convert options to an array if it's not already
+        existingQuestion.options = Array.isArray(existingQuestion.options)
+            ? existingQuestion.options
+            : [existingQuestion.options];
+        //extract  question details from the request body
+        const { text, options, category, correctAnswer, difficulty } = req.body;
+        // Update the existing question in the database
+        await existingQuestion.update({
+            text,
+            options,
+            category,
+            correctAnswer,
+            difficulty,
+        });
+        // Render the edit question form with existing details
+        res.render('editQuestion', { title: 'Edit Question', question: existingQuestion });
+    }
+    catch (error) {
+        console.error('Error editing question:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+exports.editQuestion = editQuestion;
 // Display a list of existing questions
 const showQuestionList = async (req, res) => {
     try {
         // TODO: Fetch existing questions from the database
         const questions = await Question_1.default.findAll();
-        res.render('admin/questionList', { title: 'Question List', questions });
+        res.render('questionList', { title: 'Question List', questions });
     }
     catch (error) {
         console.error('Error fetching questions:', error);
@@ -51,19 +105,16 @@ const showQuestionList = async (req, res) => {
     }
 };
 exports.showQuestionList = showQuestionList;
-const renderQuizForm = (req, res) => {
-    res.render('createQuiz', { title: 'Quiz Form' });
-};
-exports.renderQuizForm = renderQuizForm;
 const createQuiz = async (req, res) => {
     try {
         const { id, timeLimit, difficulty } = req.body;
         // fetch questions based on difficulty
-        const questions = await Question_1.default.findAll({
-            where: { difficulty },
-        });
+        const questions = await Question_1.default.findAll();
+        console.log('Difficulty:', difficulty);
+        console.log('Questions:', questions);
         if (!questions || questions.length === 0) {
-            res.status(404).json({ error: 'No questions found for the specified difficulty' });
+            console.log('No questions found for the specified difficulty');
+            res.status(404).json({ error: 'No questions found for the specified difficulty', difficulty });
             return;
         }
         //create the quiz
@@ -73,8 +124,8 @@ const createQuiz = async (req, res) => {
             difficulty,
         });
         //associate questions with the quiz
-        await newQuiz.setQuestions(questions);
-        res.status(201).json({
+        // await newQuiz.setQuestions(questions);
+        res.status(201).send({
             success: true,
             message: 'Quiz created successfully',
             quiz: newQuiz,
@@ -89,7 +140,7 @@ exports.createQuiz = createQuiz;
 const editQuiz = async (req, res) => {
     try {
         const { quizId } = req.params;
-        const { timeLimit, difficulty, questions } = req.body;
+        const { timeLimit, difficulty } = req.body;
         // Fetch the quiz
         const quiz = await Quiz_1.default.findByPk(quizId);
         if (!quiz) {

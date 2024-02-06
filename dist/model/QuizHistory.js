@@ -21,7 +21,7 @@ QuizHistory.init({
         allowNull: false,
     },
     answers: {
-        type: sequelize_1.DataTypes.JSONB, // Store user answers as a JSON object or array
+        type: sequelize_1.DataTypes.JSONB,
     },
 }, {
     sequelize: sequelize_2.default,

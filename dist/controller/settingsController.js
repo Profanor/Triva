@@ -37,7 +37,7 @@ const updateSettings = async (req, res) => {
         const updatedUser = await user.update({
             fullname,
             email,
-            password, // You may want to handle password updates separately
+            password,
             gender,
             phone,
             address,

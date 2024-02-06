@@ -14,8 +14,9 @@ router.get('/admin/addQuestion', adminController_1.showAddQuestionForm);
 router.post('/admin/addQuestion', adminController_1.addQuestion);
 // Display a list of existing questions
 router.get('/admin/questionList', adminController_1.showQuestionList);
+router.get('/admin/editQuestion/:questionId', adminController_1.editQuestion);
 // display the quiz form
-router.get('/admin/createQuiz', adminController_1.renderQuizForm);
+router.get('/admin/createQuiz', adminController_1.showQuizForm);
 // handle quiz creation
 router.post('/admin/createQuiz', adminController_1.createQuiz);
 exports.default = router;

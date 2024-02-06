@@ -19,7 +19,6 @@ const getUser = async (email) => {
 router.get('/profile', async (req, res) => {
     try {
         const { email } = req.query;
-        console.log('Email:', email);
         if (!email || typeof email !== 'string') {
             return res.status(400).json('Email parameter required');
         }

@@ -7,6 +7,9 @@ const sequelize_1 = require("sequelize");
 const sequelize_2 = __importDefault(require("../utils/sequelize"));
 const Quiz_1 = __importDefault(require("./Quiz"));
 class Question extends sequelize_1.Model {
+    static associate() {
+        Question.belongsTo(Quiz_1.default, { foreignKey: 'quizId' });
+    }
 }
 Question.init({
     text: {
@@ -14,7 +17,7 @@ Question.init({
         allowNull: false,
     },
     options: {
-        type: sequelize_1.DataTypes.JSONB, // Store answer choices as a JSON object or array
+        type: sequelize_1.DataTypes.JSONB,
         allowNull: false,
     },
     category: {
@@ -29,19 +32,8 @@ Question.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    QuizId: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Quiz_1.default,
-            key: 'id',
-        },
-    },
 }, {
     sequelize: sequelize_2.default,
     modelName: 'Question',
 });
-// Establish an association with the Quiz model
-Question.belongsToMany(Quiz_1.default, { through: 'QuizQuestion' });
-Quiz_1.default.belongsToMany(Question, { through: 'QuizQuestion' });
 exports.default = Question;

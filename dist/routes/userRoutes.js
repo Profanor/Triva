@@ -5,10 +5,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authController_1 = __importDefault(require("../controller/authController"));
+const quizTakingController_1 = require("../controller/quizTakingController");
 const router = express_1.default.Router();
 //route to render the signup view
 router.get('/login', (req, res) => {
     res.render('login', { title: 'Login' });
 });
 router.post('/login', authController_1.default.loginUser);
+//route to render the signup view
+router.get('/signup', (req, res) => {
+    res.render('signup', { title: 'Sign Up' });
+});
+router.post('/signup', authController_1.default.registerUser);
+//route to render the difficulty level view
+router.get('/level', (req, res) => {
+    res.render('levels', { title: 'Choose your difficulty' });
+});
+router.post('/start-quiz', quizTakingController_1.getQuestionsByDifficulty);
+// router.get('/questions/:difficulty', getQuestionsByDifficulty);
 exports.default = router;

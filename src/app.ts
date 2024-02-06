@@ -5,14 +5,17 @@ import path from 'path';
 import sequelize from './utils/sequelize';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import './model/User';
 
 const app = express();
 
-sequelize.sync({ alter: true })
- .then(()=> {
-  console.log('connected to the database');
- })
+  sequelize.sync()
+  .then(()=> {
+    console.log('connected to the database');
+  })
+ .catch((error) => {
+  console.error('Error connecting to the database:', error);
+ });
+
 
 // view engine setup
 app.set('views', path.join(__dirname,'views'));
@@ -24,27 +27,18 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname,'public')));
 
 // Routes
 import indexRouter from './routes/index';
-import usersRouter from'./routes/users';
-import quizRoutes from './routes/quizRoutes';
-import signup from './routes/signup';
-import login from './routes/login';
 import profile from './routes/profile';
-import quizTaking from './routes/quizTaking';
 import admin from './routes/admin';
+import userRoutes from './routes/userRoutes';
 
 //use your routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/quizRoutes', quizRoutes );
-app.use('/', signup);
-app.use('/', login);
 app.use('/', profile);
-app.use('/', quizTaking);
 app.use('/', admin);
+app.use('/', userRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
