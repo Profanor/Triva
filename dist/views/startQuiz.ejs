@@ -41,56 +41,5 @@
     </div>
 
 </div>
-
-<script>
-    document.getElementById('submitQuiz').addEventListener('click', function() {
-        const formElements = document.querySelectorAll('.question-form');
-        const userAnswers = [];
-        formElements.forEach(form => {
-            const selectedOption = form.querySelector('input[type="radio"]:checked');
-            if (selectedOption) {
-                userAnswers.push({
-                    questionId: form.id.replace('form', ''),
-                    answer: selectedOption.value
-                });
-            }
-        });
-
-        console.log('User Answers:', userAnswers); // Log user answers for debugging
-
-        // Send userAnswers to server for scoring
-        fetch('/submit-quiz', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userAnswers })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Quiz Result:', data); // Log quiz result for debugging
-            document.getElementById('score').textContent = data.score;
-            data.correctAnswers.forEach(answer => {
-                const li = document.createElement('li');
-                li.textContent = answer;
-                document.getElementById('correctAnswers').appendChild(li);
-            });
-            data.incorrectAnswers.forEach(answer => {
-                const li = document.createElement('li');
-                li.textContent = answer;
-                document.getElementById('incorrectAnswers').appendChild(li);
-            });
-            document.getElementById('quizResult').style.display = 'block';
-        })
-        .catch(error => console.error('Error submitting quiz:', error));
-    });
-</script>
-
-
 </body>
 </html>

@@ -9,6 +9,7 @@
 <body>
   <header>
     <h1><%= title %></h1>
+    <button id="toggleTheme">Toggle Theme</button>
   </header>
 
   <section>
@@ -23,6 +24,7 @@
     <form action="/level" method="post">
       <button type="submit" class="start-quiz-button">Start Quiz</button>
     </form>
+
   </section>
 
   <footer>
@@ -42,6 +44,28 @@
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleThemeButton = document.getElementById('toggleTheme');
+    const body = document.body;
+
+    // Check the user's preference for theme mode from localStorage
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        body.classList.add(currentTheme);
+    }
+
+    // Add event listener to the toggleThemeButton
+    toggleThemeButton.addEventListener('click', function () {
+        // Toggle the theme class on the body
+        body.classList.toggle('dark');
+
+        // Update localStorage with the current theme preference
+        const theme = body.classList.contains('dark') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+    });
+});
+
   </script>
 </body>
 </html>

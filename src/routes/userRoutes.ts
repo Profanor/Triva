@@ -1,6 +1,7 @@
 import express from 'express';
-import authController, { profile } from '../controller/authController';
+import authController from '../controller/authController';
 import { getQuestionsByDifficulty } from '../controller/quizTakingController';
+import { profile } from '../controller/authController'
 
 const router = express.Router();
 
@@ -17,12 +18,12 @@ router.get('/signup', (req, res)=> {
 
 router.post('/signup', authController.registerUser)
 
+router.get('/profile', profile);
 //route to render the difficulty level view
 router.get('/level', (req, res)=> {
   res.render('levels', { title: 'Choose your difficulty' });  
 });
 
-router.get('/profile', profile);
 router.post('/start-quiz', getQuestionsByDifficulty)
-
+router.post('/submit-quiz', )
 export default router;
