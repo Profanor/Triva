@@ -30,13 +30,11 @@ app.use(cookieParser());
 
 // Routes
 import indexRouter from './routes/index';
-import profile from './routes/profile';
 import admin from './routes/admin';
 import userRoutes from './routes/userRoutes';
 
 //use your routes
 app.use('/', indexRouter);
-app.use('/', profile);
 app.use('/', admin);
 app.use('/', userRoutes);
 

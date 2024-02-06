@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import QuizHistory from '../model/QuizHistory';
+// import QuizHistory from '../model/QuizHistory';
 import Question from '../model/Question';
 
 export const getQuestionsByDifficulty = async (req: Request, res: Response): Promise<void> => {
@@ -15,17 +15,18 @@ export const getQuestionsByDifficulty = async (req: Request, res: Response): Pro
             res.status(404).json({ message: 'Questions not found for the specified difficulty' });
             return;
         }
-
+        console.log(questions);
+        
         // Save the quiz in progress to the user's quiz history
-        await QuizHistory.create({
-            status: 'in-progress',
-            answers: [], 
-            startTime: new Date(),
-        });
+        // await QuizHistory.create({
+        //     status: 'in-progress',
+        //     answers: [], 
+        //     startTime: new Date(),
+        // });
 
-        res.status(200).json({ questions });
+        res.render('startQuiz', { title: 'Start', questions });
     } catch (error) {
         console.error('Error starting quiz:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'error starting the session' });
     }
 };

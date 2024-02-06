@@ -3,13 +3,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logoutUser = exports.viewQuizHistory = exports.changePassword = exports.updateUserProfile = exports.loginUser = exports.registerUser = void 0;
+exports.logoutUser = exports.viewQuizHistory = exports.changePassword = exports.updateUserProfile = exports.profile = exports.loginUser = exports.registerUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../model/User"));
 const password_1 = require("../utils/password");
 const QuizHistory_1 = __importDefault(require("../model/QuizHistory"));
 const secretKey = process.env.JWT_SECRET || 'default_secret';
 const tokenExpiration = '1h';
+const getUser = async (email) => {
+    try {
+        const user = await User_1.default.findOne({ where: { email } });
+        return user;
+    }
+    catch (error) {
+        console.error('error retrieving user from the database:', error);
+        throw error;
+    }
+};
 //register a new user
 const registerUser = async (req, res) => {
     try {
@@ -70,6 +80,26 @@ const loginUser = async (req, res) => {
     }
 };
 exports.loginUser = loginUser;
+const profile = async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email || typeof email !== 'string') {
+            res.status(400).json('Email parameter required');
+            return;
+        }
+        const user = await getUser(email);
+        if (!user) {
+            res.status(404).json('User not found');
+            return;
+        }
+        res.render('profile', { title: `Hi ${user.fullname}`, user });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json('internal server error');
+    }
+};
+exports.profile = profile;
 const updateUserProfile = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -162,6 +192,7 @@ exports.logoutUser = logoutUser;
 exports.default = {
     registerUser: exports.registerUser,
     loginUser: exports.loginUser,
+    profile: exports.profile,
     updateUserProfile: exports.updateUserProfile,
     viewQuizHistory: exports.viewQuizHistory,
     logoutUser: exports.logoutUser

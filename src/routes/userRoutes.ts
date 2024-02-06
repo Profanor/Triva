@@ -1,5 +1,5 @@
 import express from 'express';
-import authController from '../controller/authController';
+import authController, { profile } from '../controller/authController';
 import { getQuestionsByDifficulty } from '../controller/quizTakingController';
 
 const router = express.Router();
@@ -22,7 +22,7 @@ router.get('/level', (req, res)=> {
   res.render('levels', { title: 'Choose your difficulty' });  
 });
 
+router.get('/profile', profile);
 router.post('/start-quiz', getQuestionsByDifficulty)
 
-// router.get('/questions/:difficulty', getQuestionsByDifficulty);
 export default router;

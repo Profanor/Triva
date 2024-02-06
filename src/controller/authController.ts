@@ -15,6 +15,16 @@ interface UserRequest extends Request {
 const secretKey = process.env.JWT_SECRET || 'default_secret';
 const tokenExpiration = '1h';
 
+const getUser = async (email: string): Promise<User | null> => {
+  try {
+      const user = await User.findOne({ where: { email } });
+      return user;
+  } catch(error) {
+      console.error('error retrieving user from the database:', error);
+      throw error;
+  }
+};
+
 //register a new user
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -83,6 +93,29 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       res.render('login', { title: 'Login', error: 'An error occurred during login' });
     }
   };
+
+export const profile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.query;
+
+    if (!email || typeof email !== 'string') {
+        res.status(400).json('Email parameter required');
+         return
+    }
+    const user = await getUser(email);
+
+    if (!user) {
+        res.status(404).json('User not found');
+        return
+    }
+
+    res.render('profile', { title: `Hi ${user.fullname}`, user });
+
+} catch (error) {
+    console.error(error);
+    res.status(500).json('internal server error');
+  }
+}
 
 export const updateUserProfile = async (req: UserRequest, res: Response): Promise<void> => {
   try {
@@ -192,6 +225,7 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
   export default {
     registerUser,
     loginUser,
+    profile,
     updateUserProfile,
     viewQuizHistory,
     logoutUser

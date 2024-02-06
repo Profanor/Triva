@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import sequelize from '../utils/sequelize';
 
 interface UserAttributes {
-  id: number;
+  id: string;
   fullname: string;
   email: string;
   password: string;
@@ -14,7 +14,7 @@ interface UserAttributes {
 }
 
 class User extends Model<UserAttributes> {
-  public id!: number;
+  public id!: string;
   public fullname!: string;
   public email!: string;
   public password!: string;

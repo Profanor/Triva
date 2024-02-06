@@ -28,12 +28,10 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cookie_parser_1.default)());
 // Routes
 const index_1 = __importDefault(require("./routes/index"));
-const profile_1 = __importDefault(require("./routes/profile"));
 const admin_1 = __importDefault(require("./routes/admin"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 //use your routes
 app.use('/', index_1.default);
-app.use('/', profile_1.default);
 app.use('/', admin_1.default);
 app.use('/', userRoutes_1.default);
 // catch 404 and forward to error handler

@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQuestionsByDifficulty = void 0;
-const QuizHistory_1 = __importDefault(require("../model/QuizHistory"));
+// import QuizHistory from '../model/QuizHistory';
 const Question_1 = __importDefault(require("../model/Question"));
 const getQuestionsByDifficulty = async (req, res) => {
     try {
@@ -17,17 +17,18 @@ const getQuestionsByDifficulty = async (req, res) => {
             res.status(404).json({ message: 'Questions not found for the specified difficulty' });
             return;
         }
+        console.log(questions);
         // Save the quiz in progress to the user's quiz history
-        await QuizHistory_1.default.create({
-            status: 'in-progress',
-            answers: [],
-            startTime: new Date(),
-        });
-        res.status(200).json({ questions });
+        // await QuizHistory.create({
+        //     status: 'in-progress',
+        //     answers: [], 
+        //     startTime: new Date(),
+        // });
+        res.render('startQuiz', { title: 'Start', questions });
     }
     catch (error) {
         console.error('Error starting quiz:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'error starting the session' });
     }
 };
 exports.getQuestionsByDifficulty = getQuestionsByDifficulty;
