@@ -12,6 +12,11 @@ class Question extends sequelize_1.Model {
     }
 }
 Question.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        primaryKey: true,
+        unique: true
+    },
     text: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,

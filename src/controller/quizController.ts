@@ -1,58 +1,48 @@
-// import { Request, Response } from 'express';
-// import Quiz from '../model/Quiz';
-// import Question from '../model/Question';
-// import generateQuizQuestions from '../utils/quizUtils';
+import { Request, Response } from 'express';
+import Question from '../model/Question';
 
+const submitQuiz = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Fetch correct answers from the database
+        const correctAnswers = await Question.findAll({ attributes: ['id', 'correctAnswer'] });
+        const quizData = req.body;
 
-// export const createQuiz = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         // Extract quiz details from the request body
-//         const { id, timeLimit, difficulty } = req.body;
+        // Calculate score and correct/incorrect answers
+        let score = 0;
+        const correctAnswersList = [];
+        const incorrectAnswersList = [];
 
-//         // Create the quiz
-//         const newQuiz = await Quiz.create({
-//             id,
-//             timeLimit,
-//             difficulty,
-//         });
+        for (const questionId in quizData) {
+            const userAnswer = quizData[questionId];
+            const correctAnswerObj = correctAnswers.find(answer => answer.id === Number(questionId));
+            
+            if (correctAnswerObj) {
+                const correctAnswer = correctAnswerObj.correctAnswer;
+                if (userAnswer === correctAnswer) {
+                    score++; // Increment score for each correct answer
+                    correctAnswersList.push(`Question ${questionId}: ${userAnswer}`);
+                } else {
+                    incorrectAnswersList.push(`Question ${questionId}: ${userAnswer} (Correct Answer: ${correctAnswer})`);
+                }
+            } else {
+                // Handle case where question ID is not found (invalid submission)
+                console.warn(`No correct answer found for question ID: ${questionId}`);
+            }
+        }
 
-//         //fetch questions based on difficulty
-//         const questions = await Question.findAll({
-//             where: { difficulty },
-//         });
-//         console.log('Questions', questions)
+        // Prepare response data
+        const responseData = {
+            score: score,
+            correctAnswers: correctAnswersList,
+            incorrectAnswers: incorrectAnswersList,
+        };
 
-//         res.status(201).json({ message: 'Quiz created successfully', quiz: newQuiz });
-//     } catch (error) {
-//         console.error('Error creating quiz:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
+        // Send response with quiz result
+        res.json(responseData);
+    } catch (error) {
+        console.error('Error submitting quiz:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
-// export const getQuizQuestions = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const quizId = Number(req.params.id); //incase the quizid is a string in the url params
-//         const difficulty = req.params.difficulty;
-
-//         // Fetch the quiz and its associated questions
-//         const quiz = await Quiz.findByPk(quizId, {
-//             include: Question
-//         });
-
-//         if (!quiz) {
-//             console.error(`Quiz with ID ${quizId} not found.`);
-//             res.status(404).json({ error: 'Quiz not found' });
-//             return;
-//         }
-
-//         // Generate and retrieve quiz questions
-//         const quizQuestions = await generateQuizQuestions(quiz);
-
-//         res.status(200).json({ quizQuestions });
-//     } catch (error) {
-//         console.error('Error fetching quiz questions:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
-
-// export default { createQuiz, getQuizQuestions }
+export default submitQuiz;

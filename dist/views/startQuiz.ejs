@@ -30,7 +30,7 @@
     <% }); %>
 
     <button id="submitQuiz">Submit</button>
-
+    <!-- Quiz Result Section -->
     <div id="quizResult" style="display: none;">
         <h2>Quiz Result</h2>
         <p>Score: <span id="score"></span></p>
@@ -38,8 +38,62 @@
         <ul id="correctAnswers"></ul>
         <h3>Incorrect Answers:</h3>
         <ul id="incorrectAnswers"></ul>
+        <button id="tryAgain">Try Again</button>
     </div>
 
 </div>
+
+<script>
+    // JavaScript code to handle form submission and display quiz result
+    document.getElementById('submitQuiz').addEventListener('click', function(event) {
+        event.preventDefault(); 
+
+        // Disable all radio buttons after submission
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(button => {
+            button.disabled = true;
+        });
+
+        // Prepare quiz data to send to server
+        const formData = {};
+        const questions = document.querySelectorAll('.question');
+        questions.forEach((question) => {
+            const questionId = question.id.substring(8); // Extract question ID
+            const selectedOption = document.querySelector(`input[name="answer${questionId}"]:checked`);
+            if (selectedOption) {
+                formData[questionId] = selectedOption.value;
+            }
+        });
+
+        // Make a POST request to submit quiz data
+        fetch('/submit-quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display quiz result section
+            document.getElementById('quizResult').style.display = 'block';
+
+            // Update quiz result content (e.g., score, correct/incorrect answers)
+            document.getElementById('score').innerText = data.score;
+            document.getElementById('correctAnswers').innerHTML = data.correctAnswers.map(answer => `<li>${answer}</li>`).join('');
+            document.getElementById('incorrectAnswers').innerHTML = data.incorrectAnswers.map(answer => `<li>${answer}</li>`).join('');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    // JavaScript code to handle try again button
+    document.getElementById('tryAgain').addEventListener('click', function() {
+        // Reload the page to reset the quiz
+        window.location.reload();
+    });
+</script>
+
 </body>
 </html>

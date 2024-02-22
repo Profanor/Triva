@@ -7,8 +7,9 @@ const express_1 = __importDefault(require("express"));
 const authController_1 = __importDefault(require("../controller/authController"));
 const quizTakingController_1 = require("../controller/quizTakingController");
 const authController_2 = require("../controller/authController");
+const quizController_1 = __importDefault(require("../controller/quizController"));
 const router = express_1.default.Router();
-//route to render the signup view
+//route to render the login view
 router.get('/login', (req, res) => {
     res.render('login', { title: 'Login' });
 });
@@ -24,5 +25,5 @@ router.get('/level', (req, res) => {
     res.render('levels', { title: 'Choose your difficulty' });
 });
 router.post('/start-quiz', quizTakingController_1.getQuestionsByDifficulty);
-router.post('/submit-quiz');
+router.post('/submit-quiz', quizController_1.default);
 exports.default = router;
