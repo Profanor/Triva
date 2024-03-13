@@ -1,15 +1,22 @@
-/* Styles for quiz container */
+body {
+    background: url('../images/quiz.jpg') no-repeat center center fixed;
+    font-family: sans-serif;
+    background-size: cover;
+    margin: 0;
+    min-height: 100vh;
+}
+
 .quiz-container {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
     margin-top: 50px;
-    background-color: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.597); 
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
-/* Styles for quiz questions */
 .question {
     margin-bottom: 20px;
 }
@@ -31,12 +38,11 @@
     margin-right: 10px;
 }
 
-/* Styles for submit button */
 #submitQuiz {
     display: block;
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-image: linear-gradient(to right, red, black); /* Linear gradient */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -45,8 +51,8 @@
 }
 
 #submitQuiz:hover {
-    background-color: #0056b3;
-}
+    background-image: linear-gradient(to right, darkred, #000);
+};
 
 /* Styles for quiz result section */
 #quizResult {
@@ -75,3 +81,53 @@
 #quizResult ul li {
     margin-bottom: 5px;
 }
+
+#timer {
+    display: flex;
+    font-weight: 900;
+    font-size: 30px;
+    justify-content: flex-end;
+}
+#time {
+    font-weight: 900;
+    font-size: 30px;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4);
+}
+  
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    border-radius: 5px;
+}
+  
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+  
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+  

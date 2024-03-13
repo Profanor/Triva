@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/stylesheets/startQuiz.css">
+    <link rel="stylesheet" href="../stylesheets/startQuiz.css">
     <title><%= title %></title>
 </head>
 <body>
 
 <div class="quiz-container">
-    <h1>Quiz Questions</h1>
+    <div id="timer">Timer : <span id="time"> 0:00</span></div>
+    <h1>Questions</h1>
 
     <!-- Loop through each question -->
     <% questions.forEach((question, index) => { %>
@@ -40,59 +41,122 @@
         <ul id="incorrectAnswers"></ul>
         <button id="tryAgain">Try Again</button>
     </div>
-
+        <!-- Modal HTML -->
+        <div id="failureModal" class="modal">
+        <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Oops...Please try again!</p>
+        </div>
+        </div>
+  
 </div>
 
 <script>
+    // Set the quiz duration in seconds
+    const quizDuration = 100; // 1.4 minutes (300 seconds)
+
+    // Initialize the timer variables
+    let timeLeft = quizDuration;
+    let timerInterval;
+
+    // Function to start the timer
+    function startTimer() {
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Function to update the timer display
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        if (seconds < 10) {
+        seconds = `0${seconds}`;
+    }
+    // Check if time is less than or equal to 20 seconds
+    if (timeLeft <= 20) {
+        document.getElementById('time').style.color = 'red'; // Change text color to red
+    } else {
+        document.getElementById('time').style.color = ''; // Reset text color to default
+    }
+    document.getElementById('time').innerText = `${minutes}:${seconds}`;
+    timeLeft--;
+    if (timeLeft < 0) {
+        clearInterval(timerInterval);
+        endQuiz();
+        displayFailureModal(); // Call function to display failure modal
+    }
+}
+
+    // Function to display the failure modal
+    function displayFailureModal() {
+    // Get the failure modal element
+    var modal = document.getElementById("failureModal");
+    // Display the modal
+    modal.style.display = "block";
+}
+
+    // Function to end the quiz when the timer reaches zero
+    function endQuiz() {
+    document.getElementById('submitQuiz').disabled = true;
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(button => {
+        button.disabled = true;
+    });
+    // Add any additional logic here when the quiz ends
+}
+
+    // Start the timer when the page loads
+    window.onload = startTimer;
+
     // JavaScript code to handle form submission and display quiz result
     document.getElementById('submitQuiz').addEventListener('click', function(event) {
-        event.preventDefault(); 
+    event.preventDefault(); 
+    clearInterval(timerInterval);
 
-        // Disable all radio buttons after submission
-        const radioButtons = document.querySelectorAll('input[type="radio"]');
-        radioButtons.forEach(button => {
-            button.disabled = true;
-        });
-
-        // Prepare quiz data to send to server
-        const formData = {};
-        const questions = document.querySelectorAll('.question');
-        questions.forEach((question) => {
-            const questionId = question.id.substring(8); // Extract question ID
-            const selectedOption = document.querySelector(`input[name="answer${questionId}"]:checked`);
-            if (selectedOption) {
-                formData[questionId] = selectedOption.value;
-            }
-        });
-
-        // Make a POST request to submit quiz data
-        fetch('/submit-quiz', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Display quiz result section
-            document.getElementById('quizResult').style.display = 'block';
-
-            // Update quiz result content (e.g., score, correct/incorrect answers)
-            document.getElementById('score').innerText = data.score;
-            document.getElementById('correctAnswers').innerHTML = data.correctAnswers.map(answer => `<li>${answer}</li>`).join('');
-            document.getElementById('incorrectAnswers').innerHTML = data.incorrectAnswers.map(answer => `<li>${answer}</li>`).join('');
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    // Disable all radio buttons after submission
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(button => {
+        button.disabled = true;
     });
+
+    // Prepare quiz data to send to server
+    const formData = {};
+    const questions = document.querySelectorAll('.question');
+    questions.forEach((question) => {
+        const questionId = question.id.substring(8); // Extract question ID
+        const selectedOption = document.querySelector(`input[name="answer${questionId}"]:checked`);
+        if (selectedOption) {
+            formData[questionId] = selectedOption.value;
+        }
+    });
+
+    // Make a POST request to submit quiz data
+    fetch('/submit-quiz', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display quiz result section
+        document.getElementById('quizResult').style.display = 'block';
+
+        // Update quiz result content (e.g., score, correct/incorrect answers)
+        document.getElementById('score').innerText = data.score;
+        document.getElementById('correctAnswers').innerHTML = data.correctAnswers.map(answer => `<li>${answer}</li>`).join('');
+        document.getElementById('incorrectAnswers').innerHTML = data.incorrectAnswers.map(answer => `<li>${answer}</li>`).join('');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
 
     // JavaScript code to handle try again button
     document.getElementById('tryAgain').addEventListener('click', function() {
-        // Reload the page to reset the quiz
-        window.location.reload();
-    });
+    // Reload the page to reset the quiz
+    window.location.reload();
+});
 </script>
 
 </body>

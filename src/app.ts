@@ -1,6 +1,6 @@
 import express from 'express';
-import createError from 'http-errors';
 import { Response, Request, NextFunction } from 'express';
+import createError from 'http-errors';
 import path from 'path';
 import sequelize from './utils/sequelize';
 import cookieParser from 'cookie-parser';
@@ -31,12 +31,12 @@ app.use(cookieParser());
 // Routes
 import indexRouter from './routes/index';
 import admin from './routes/admin';
-import userRoutes from './routes/userRoutes';
+import users from './routes/users';
 
 //use your routes
 app.use('/', indexRouter);
 app.use('/', admin);
-app.use('/', userRoutes);
+app.use('/', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

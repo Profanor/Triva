@@ -29,11 +29,11 @@ app.use((0, cookie_parser_1.default)());
 // Routes
 const index_1 = __importDefault(require("./routes/index"));
 const admin_1 = __importDefault(require("./routes/admin"));
-const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const users_1 = __importDefault(require("./routes/users"));
 //use your routes
 app.use('/', index_1.default);
 app.use('/', admin_1.default);
-app.use('/', userRoutes_1.default);
+app.use('/', users_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next((0, http_errors_1.default)(404));

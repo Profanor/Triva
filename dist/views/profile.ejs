@@ -28,7 +28,7 @@
   </section>
 
   <footer>
-    <!-- Add footer content as needed -->
+    
   </footer>
   <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -48,17 +48,21 @@
 document.addEventListener('DOMContentLoaded', function () {
     const toggleThemeButton = document.getElementById('toggleTheme');
     const body = document.body;
+    const section = document.querySelector('section');
 
     // Check the user's preference for theme mode from localStorage
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme) {
         body.classList.add(currentTheme);
+        section.classList.add(currentTheme);
     }
 
     // Add event listener to the toggleThemeButton
     toggleThemeButton.addEventListener('click', function () {
         // Toggle the theme class on the body
         body.classList.toggle('dark');
+        // Toggle the theme class on the section
+        section.classList.toggle('dark');
 
         // Update localStorage with the current theme preference
         const theme = body.classList.contains('dark') ? 'dark' : 'light';
