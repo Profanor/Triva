@@ -5,7 +5,6 @@
     ],
     "routes": [
       { "handle": "filesystem" }
-    ],
-    "output": "dist" 
+    ]
   }
   
