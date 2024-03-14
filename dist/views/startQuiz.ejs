@@ -92,6 +92,12 @@
     var modal = document.getElementById("failureModal");
     // Display the modal
     modal.style.display = "block";
+    //get the close button element
+    let closeButton = document.querySelector('.close');
+
+    closeButton.addEventListener('click', ()=> {
+        modal.style.display = 'none';
+    })
 }
 
     // Function to end the quiz when the timer reaches zero
