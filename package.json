@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc --outDir dist --watch",
+    "build": "tsc",
     "dev": "nodemon ./bin/www",
-    "start": "node ./bin/www"
+    "start": "node src/app.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
