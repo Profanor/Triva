@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "start": "nodemon ./bin/www",
     "dev": "nodemon ./bin/www",
-    "start": "node src/app.ts"
+    "build": "tsc"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
