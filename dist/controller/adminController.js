@@ -108,7 +108,6 @@ exports.showQuestionList = showQuestionList;
 const createQuiz = async (req, res) => {
     try {
         const { id, timeLimit, difficulty } = req.body;
-        // fetch questions based on difficulty
         const questions = await Question_1.default.findAll();
         console.log('Difficulty:', difficulty);
         console.log('Questions:', questions);

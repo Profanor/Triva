@@ -82,7 +82,7 @@
     if (timeLeft < 0) {
         clearInterval(timerInterval);
         endQuiz();
-        displayFailureModal(); // Call function to display failure modal
+        displayFailureModal(); 
     }
 }
 
@@ -160,7 +160,6 @@
 
     // JavaScript code to handle try again button
     document.getElementById('tryAgain').addEventListener('click', function() {
-    // Reload the page to reset the quiz
     window.location.reload();
 });
 </script>
