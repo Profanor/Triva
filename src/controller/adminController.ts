@@ -9,7 +9,6 @@ export const showDashboard = (req: Request, res: Response): void => {
 
 // display form for adding a new question
 export const showAddQuestionForm = (req: Request, res: Response): void => {
-
   const quizId = req.params.quizId;
   res.render('addQuestion', { title: 'Add Question Form', quizId });
 };
@@ -141,9 +140,6 @@ export const createQuiz = async (req: Request, res: Response): Promise<void> => 
       timeLimit,
       difficulty,
     });
-
-    //associate questions with the quiz
-    // await newQuiz.setQuestions(questions);
 
     res.status(201).send({ 
       success: true, 
