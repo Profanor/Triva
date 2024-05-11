@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -22,24 +31,24 @@ const showQuizForm = (req, res) => {
 };
 exports.showQuizForm = showQuizForm;
 // Handle the submission of a new question
-const addQuestion = async (req, res) => {
+const addQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Extract question details from the request body
         const { text, options, category, correctAnswer, difficulty } = req.body;
         console.log('Req body', req.body);
         // Check if a quiz with the specified difficulty exists
-        let quiz = await Quiz_1.default.findOne({ where: { difficulty } });
+        let quiz = yield Quiz_1.default.findOne({ where: { difficulty } });
         // If no quiz exists for the specified difficulty, create a new one
         if (!quiz) {
             const { timeLimit, difficulty } = req.body;
-            quiz = await Quiz_1.default.create({ timeLimit, difficulty });
+            quiz = yield Quiz_1.default.create({ timeLimit, difficulty });
             if (!quiz) {
                 res.status(500).json({ error: 'failed to create quiz' });
                 return;
             }
         }
         // associate the new question with the existing quiz
-        const newQuestion = await Question_1.default.create({
+        const newQuestion = yield Question_1.default.create({
             text,
             options,
             category,
@@ -57,14 +66,14 @@ const addQuestion = async (req, res) => {
             requestBody: req.body
         });
     }
-};
+});
 exports.addQuestion = addQuestion;
 // logic for editing questions
-const editQuestion = async (req, res) => {
+const editQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { questionId } = req.params;
         //fetch the existing question from the database
-        const existingQuestion = await Question_1.default.findByPk(questionId);
+        const existingQuestion = yield Question_1.default.findByPk(questionId);
         if (!existingQuestion) {
             res.status(404).json({ error: 'Question not found' });
             return;
@@ -76,7 +85,7 @@ const editQuestion = async (req, res) => {
         //extract  question details from the request body
         const { text, options, category, correctAnswer, difficulty } = req.body;
         // Update the existing question in the database
-        await existingQuestion.update({
+        yield existingQuestion.update({
             text,
             options,
             category,
@@ -90,25 +99,25 @@ const editQuestion = async (req, res) => {
         console.error('Error editing question:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.editQuestion = editQuestion;
 // Display a list of existing questions
-const showQuestionList = async (req, res) => {
+const showQuestionList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // TODO: Fetch existing questions from the database
-        const questions = await Question_1.default.findAll();
+        const questions = yield Question_1.default.findAll();
         res.render('questionList', { title: 'Question List', questions });
     }
     catch (error) {
         console.error('Error fetching questions:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.showQuestionList = showQuestionList;
-const createQuiz = async (req, res) => {
+const createQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, timeLimit, difficulty } = req.body;
-        const questions = await Question_1.default.findAll();
+        const questions = yield Question_1.default.findAll();
         console.log('Difficulty:', difficulty);
         console.log('Questions:', questions);
         if (!questions || questions.length === 0) {
@@ -117,13 +126,11 @@ const createQuiz = async (req, res) => {
             return;
         }
         //create the quiz
-        const newQuiz = await Quiz_1.default.create({
+        const newQuiz = yield Quiz_1.default.create({
             id,
             timeLimit,
             difficulty,
         });
-        //associate questions with the quiz
-        // await newQuiz.setQuestions(questions);
         res.status(201).send({
             success: true,
             message: 'Quiz created successfully',
@@ -134,20 +141,20 @@ const createQuiz = async (req, res) => {
         console.error('Error creating quiz:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
-};
+});
 exports.createQuiz = createQuiz;
-const editQuiz = async (req, res) => {
+const editQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { quizId } = req.params;
         const { timeLimit, difficulty } = req.body;
         // Fetch the quiz
-        const quiz = await Quiz_1.default.findByPk(quizId);
+        const quiz = yield Quiz_1.default.findByPk(quizId);
         if (!quiz) {
             res.status(404).json({ success: false, error: 'Quiz not found' });
             return;
         }
         // Update quiz details
-        await quiz.update({
+        yield quiz.update({
             timeLimit,
             difficulty,
         });
@@ -157,24 +164,24 @@ const editQuiz = async (req, res) => {
         console.error('Error editing quiz:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
-};
+});
 exports.editQuiz = editQuiz;
-const deleteQuiz = async (req, res) => {
+const deleteQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { quizId } = req.params;
         // Fetch the quiz
-        const quiz = await Quiz_1.default.findByPk(quizId);
+        const quiz = yield Quiz_1.default.findByPk(quizId);
         if (!quiz) {
             res.status(404).json({ success: false, error: 'Quiz not found' });
             return;
         }
         // Delete the quiz
-        await quiz.destroy();
+        yield quiz.destroy();
         res.status(200).json({ success: true, message: 'Quiz deleted successfully' });
     }
     catch (error) {
         console.error('Error deleting quiz:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
-};
+});
 exports.deleteQuiz = deleteQuiz;

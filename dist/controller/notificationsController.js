@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -30,8 +39,8 @@ exports.sendAchievementNotification = exports.sendQuizReminderNotification = exp
 const User_1 = __importDefault(require("../model/User"));
 const notifier = __importStar(require("node-notifier"));
 // Helper function to send notifications
-const sendNotification = async (email, title, message) => {
-    await new Promise((resolve) => {
+const sendNotification = (email, title, message) => __awaiter(void 0, void 0, void 0, function* () {
+    yield new Promise((resolve) => {
         notifier.notify({
             title,
             message,
@@ -46,14 +55,14 @@ const sendNotification = async (email, title, message) => {
             resolve();
         });
     });
-};
-const sendNewQuizNotification = async (req, res) => {
+});
+const sendNewQuizNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Fetch the list of users
-        const users = await User_1.default.findAll();
+        const users = yield User_1.default.findAll();
         // Send notifications to each user
         for (const user of users) {
-            await sendNotification(user.email, 'New Quiz Available', 'Check out the latest quiz on Triva!');
+            yield sendNotification(user.email, 'New Quiz Available', 'Check out the latest quiz on Triva!');
         }
         res.status(200).json({ success: true, message: 'New quiz notifications sent successfully' });
     }
@@ -61,15 +70,15 @@ const sendNewQuizNotification = async (req, res) => {
         console.error('Error sending new quiz notifications:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
-};
+});
 exports.sendNewQuizNotification = sendNewQuizNotification;
-const sendQuizReminderNotification = async (req, res) => {
+const sendQuizReminderNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Fetch the list of users who need reminders (based on your logic)
-        const users = await User_1.default.findAll();
+        const users = yield User_1.default.findAll();
         // Send reminders to each user
         for (const user of users) {
-            await sendNotification(user.email, 'Quiz Reminder', 'Don\'t forget to take the quiz!');
+            yield sendNotification(user.email, 'Quiz Reminder', 'Don\'t forget to take the quiz!');
         }
         res.status(200).json({ success: true, message: 'Quiz reminder notifications sent successfully' });
     }
@@ -77,15 +86,15 @@ const sendQuizReminderNotification = async (req, res) => {
         console.error('Error sending quiz reminder notifications:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
-};
+});
 exports.sendQuizReminderNotification = sendQuizReminderNotification;
-const sendAchievementNotification = async (req, res) => {
+const sendAchievementNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Fetch the list of users who achieved something (based on your logic)
-        const users = await User_1.default.findAll();
+        const users = yield User_1.default.findAll();
         // Send achievement notifications to each user
         for (const user of users) {
-            await sendNotification(user.email, 'Achievement Unlocked', 'Congratulations on your achievement!');
+            yield sendNotification(user.email, 'Achievement Unlocked', 'Congratulations on your achievement!');
         }
         res.status(200).json({ success: true, message: 'Achievement notifications sent successfully' });
     }
@@ -93,5 +102,5 @@ const sendAchievementNotification = async (req, res) => {
         console.error('Error sending achievement notifications:', error);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
-};
+});
 exports.sendAchievementNotification = sendAchievementNotification;

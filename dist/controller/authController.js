@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -10,30 +19,30 @@ const password_1 = require("../utils/password");
 const QuizHistory_1 = __importDefault(require("../model/QuizHistory"));
 const secretKey = process.env.JWT_SECRET || 'default_secret';
 const tokenExpiration = '1h';
-const getUser = async (email) => {
+const getUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = await User_1.default.findOne({ where: { email } });
+        const user = yield User_1.default.findOne({ where: { email } });
         return user;
     }
     catch (error) {
         console.error('error retrieving user from the database:', error);
         throw error;
     }
-};
+});
 //register a new user
-const registerUser = async (req, res) => {
+const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullname, email, password, gender, phone, address } = req.body;
         //check if the user with the email already exists
-        const existingUser = await User_1.default.findOne({ where: { email } });
+        const existingUser = yield User_1.default.findOne({ where: { email } });
         if (existingUser) {
             res.status(400).json({ error: 'User with this email already exists' });
             return;
         }
         //hash the password
-        const hashedPassword = await (0, password_1.hashPassword)(password);
+        const hashedPassword = yield (0, password_1.hashPassword)(password);
         //create a new user
-        const newUser = await User_1.default.create({
+        const newUser = yield User_1.default.create({
             fullname,
             email,
             password: hashedPassword,
@@ -48,19 +57,19 @@ const registerUser = async (req, res) => {
         console.error('Error registering user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.registerUser = registerUser;
 //login user
-const loginUser = async (req, res) => {
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         //check if the user email exists
-        const user = await User_1.default.findOne({ where: { email } });
+        const user = yield User_1.default.findOne({ where: { email } });
         if (!user) {
             return res.render('login', { title: 'Login', error: 'Invalid credentials' });
         }
         //check if password is correct
-        const isPasswordValid = await (0, password_1.comparePassword)(password, user.password);
+        const isPasswordValid = yield (0, password_1.comparePassword)(password, user.password);
         if (!isPasswordValid) {
             return res.render('login', { title: 'Login', error: 'Invalid credentials' });
         }
@@ -78,16 +87,16 @@ const loginUser = async (req, res) => {
         console.error('Error during login:', error);
         res.render('login', { title: 'Login', error: 'An error occurred during login' });
     }
-};
+});
 exports.loginUser = loginUser;
-const profile = async (req, res) => {
+const profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.query;
         if (!email || typeof email !== 'string') {
             res.status(400).json('Email parameter required');
             return;
         }
-        const user = await getUser(email);
+        const user = yield getUser(email);
         if (!user) {
             res.status(404).json('User not found');
             return;
@@ -98,9 +107,9 @@ const profile = async (req, res) => {
         console.error(error);
         res.status(500).json('internal server error');
     }
-};
+});
 exports.profile = profile;
-const updateUserProfile = async (req, res) => {
+const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
         const { fullname, gender, phone, address } = req.body;
@@ -111,14 +120,14 @@ const updateUserProfile = async (req, res) => {
             return;
         }
         // Update the user profile
-        const updatedUser = await User_1.default.update({ fullname, gender, phone, address, }, { returning: true, where: { id: userId } });
+        const updatedUser = yield User_1.default.update({ fullname, gender, phone, address, }, { returning: true, where: { id: userId } });
         res.status(200).json({ message: 'User profile updated successfully', user: updatedUser });
     }
     catch (error) {
         console.error('Error updating user profile:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.updateUserProfile = updateUserProfile;
 // Define a function for input validation
 const validateUserProfileUpdate = (fullname, gender, phone, address) => {
@@ -127,7 +136,7 @@ const validateUserProfileUpdate = (fullname, gender, phone, address) => {
     }
     return null; // No validation error
 };
-const changePassword = async (req, res) => {
+const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
         const { oldPassword, newPassword } = req.body;
@@ -137,13 +146,13 @@ const changePassword = async (req, res) => {
             return;
         }
         // Fetch the user
-        const user = await User_1.default.findByPk(userId);
+        const user = yield User_1.default.findByPk(userId);
         if (!user) {
             res.status(404).json({ error: 'User not found' });
             return;
         }
         // Check if the old password is correct
-        const isPasswordValid = await (0, password_1.comparePassword)(oldPassword, user.password);
+        const isPasswordValid = yield (0, password_1.comparePassword)(oldPassword, user.password);
         if (!isPasswordValid) {
             res.status(401).json({ error: 'Invalid old password' });
             return;
@@ -154,31 +163,31 @@ const changePassword = async (req, res) => {
             return;
         }
         // Hash and update the new password
-        const hashedPassword = await (0, password_1.hashPassword)(newPassword);
-        await user.update({ password: hashedPassword });
+        const hashedPassword = yield (0, password_1.hashPassword)(newPassword);
+        yield user.update({ password: hashedPassword });
         res.status(200).json({ message: 'Password changed successfully' });
     }
     catch (error) {
         console.error('Error changing password:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.changePassword = changePassword;
-const viewQuizHistory = async (req, res) => {
+const viewQuizHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
         // Fetch the user's quiz history
-        const quizHistory = await User_1.default.findByPk(userId, { include: [{ model: QuizHistory_1.default }] });
+        const quizHistory = yield User_1.default.findByPk(userId, { include: [{ model: QuizHistory_1.default }] });
         res.status(200).json({ quizHistory });
     }
     catch (error) {
         console.error('Error fetching quiz history:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+});
 exports.viewQuizHistory = viewQuizHistory;
 // Logout user
-const logoutUser = async (req, res) => {
+const logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'strict' });
         res.status(200).json({ message: 'Logout successful' });
@@ -187,7 +196,7 @@ const logoutUser = async (req, res) => {
         console.error('Error logging out user:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-};
+});
 exports.logoutUser = logoutUser;
 exports.default = {
     registerUser: exports.registerUser,
