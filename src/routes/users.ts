@@ -16,6 +16,7 @@ router.post('/login', loginUser)
 router.get('/signup', (req, res)=> {
   res.render('signup', { title: 'Sign Up' });  
 });
+
 router.post('/signup', registerUser)
 
 router.get('/profile', profile);

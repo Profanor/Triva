@@ -23,6 +23,11 @@ export const registerUser = async (req: Request, res: Response) => {
     try {
         const { fullname, email, password, gender, phone, address } = req.body;
 
+        // Perform input validation checks
+        if (!fullname || !email || !password || !gender || !phone || !address) {
+          return res.status(400).json({ error: 'All fields are required' });
+        }
+
         //check if the user with the email already exists
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
@@ -45,10 +50,10 @@ export const registerUser = async (req: Request, res: Response) => {
         // Generate JWT token
         const token = jwt.sign({ userId: newUser.id, email: newUser.email }, key, { expiresIn: '1d' });
 
+        console.log({ message: 'User registered successfully', user: newUser, token });
+
+        // Redirect to login page after successful registration
         res.redirect('/login');
-        res.status(201).json({ message: 'User registered successfully', user: newUser, token });
-        console.log('New User:', newUser);
-        
     } catch (error:any) {
         console.error('Error registering user:', error.message);
         res.status(500).json({error: 'Internal server error' });
@@ -59,6 +64,11 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+
+        // Perform input validation checks
+        if (!email || !password) {
+          return res.status(400).json({ error: 'Email and password are required' });
+        }
 
         // Check if the user email exists
         const user = await User.findOne({ where: { email } });
@@ -79,8 +89,6 @@ export const loginUser = async (req: Request, res: Response) => {
 
         // Redirect the user to their own profile page with the JWT token embedded
         res.redirect(`/profile?token=${token}`);
-
-        console.log('logged in successfully');
     } catch (error) {
       console.error('Error during login:', error);
       res.render('login', { title: 'Login', error: 'An error occurred during login' });
@@ -114,7 +122,8 @@ export const profile = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json('internal server error');
   }
-}
+};
+
 
 // export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
 //   try {

@@ -29,6 +29,10 @@ const key = process.env.SECRET_KEY || generateSecretKey();
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullname, email, password, gender, phone, address } = req.body;
+        // Perform input validation checks
+        if (!fullname || !email || !password || !gender || !phone || !address) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
         //check if the user with the email already exists
         const existingUser = yield User_1.default.findOne({ where: { email } });
         if (existingUser) {
@@ -47,9 +51,9 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         // Generate JWT token
         const token = jsonwebtoken_1.default.sign({ userId: newUser.id, email: newUser.email }, key, { expiresIn: '1d' });
+        console.log({ message: 'User registered successfully', user: newUser, token });
+        // Redirect to login page after successful registration
         res.redirect('/login');
-        res.status(201).json({ message: 'User registered successfully', user: newUser, token });
-        console.log('New User:', newUser);
     }
     catch (error) {
         console.error('Error registering user:', error.message);
@@ -60,6 +64,10 @@ exports.registerUser = registerUser;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
+        // Perform input validation checks
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
         // Check if the user email exists
         const user = yield User_1.default.findOne({ where: { email } });
         if (!user) {
@@ -74,7 +82,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email }, key, { expiresIn: '1d' });
         // Redirect the user to their own profile page with the JWT token embedded
         res.redirect(`/profile?token=${token}`);
-        console.log('logged in successfully');
     }
     catch (error) {
         console.error('Error during login:', error);
