@@ -53,10 +53,10 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const token = jsonwebtoken_1.default.sign({ userId: newUser.id, email: newUser.email }, key, { expiresIn: '1d' });
         console.log({ message: 'User registered successfully', user: newUser, token });
         // Redirect to login page after successful registration
-        res.redirect('/login');
+        res.redirect('/users/login');
     }
     catch (error) {
-        console.error('Error registering user:', error.message);
+        console.error('Error registering user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

@@ -52,9 +52,9 @@ export const registerUser = async (req: Request, res: Response) => {
         console.log({ message: 'User registered successfully', user: newUser, token });
 
         // Redirect to login page after successful registration
-        res.redirect('/login');
-    } catch (error:any) {
-        console.error('Error registering user:', error.message);
+        res.redirect('/users/login');
+    } catch (error) {
+        console.error('Error registering user:', error);
         res.status(500).json({error: 'Internal server error' });
     }
 };
