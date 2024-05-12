@@ -8,6 +8,7 @@ import logger from 'morgan';
 
 const app = express();
 
+// Synchronize Sequelize models with the database
   sequelize.sync()
   .then(()=> {
     console.log('connected to the database');
@@ -35,8 +36,8 @@ import users from './routes/users';
 
 //use your routes
 app.use('/', indexRouter);
-app.use('/', admin);
-app.use('/', users);
+app.use('/admin', admin);
+app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

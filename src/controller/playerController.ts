@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserAttributes } from '../model/User';
 import { comparePassword, hashPassword } from '../utils/password';
-import { getUserByToken } from "../utils/getUser";
+import { getUser } from "../utils/getUser";
 import User from "../model/User";
 import QuizHistory from "../model/QuizHistory";
 import jwt from 'jsonwebtoken';
@@ -87,30 +87,27 @@ export const loginUser = async (req: Request, res: Response) => {
         // Passwords match, generate JWT token
         const token = jwt.sign({ userId: user.id, email: user.email }, key, { expiresIn: '1d' });
 
+         // Set the token in a cookie
+         res.cookie('token', token, { maxAge: 86400000, httpOnly: true }); // Max age is in milliseconds (1 day)
+
         // Redirect the user to their own profile page with the JWT token embedded
-        res.redirect(`/profile?token=${token}`);
+        res.redirect(`/profile?email=${user.email}`);
     } catch (error) {
       console.error('Error during login:', error);
       res.render('login', { title: 'Login', error: 'An error occurred during login' });
     }
-  };
+};
 
 
 export const profile = async (req: Request, res: Response) => {
   try {
-    const { token } = req.query;
+    const { email } = req.query;
 
-    if (!token || typeof token !== 'string') {
-      return res.status(400).json('Token parameter required');
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json('Email parameter required');
     }
 
-    // Verify and decode the JWT token
-    const decodedToken: any = jwt.verify(token, process.env.SECRET_KEY || '');
-
-    // Extract the user ID from the decoded token
-    const userId = decodedToken.userId;
-
-    const user = await getUserByToken(userId);
+    const user = await getUser(email);
 
     if (!user) {
       return res.status(404).json('User not found');

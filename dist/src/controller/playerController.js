@@ -80,8 +80,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Passwords match, generate JWT token
         const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email }, key, { expiresIn: '1d' });
+        // Set the token in a cookie
+        res.cookie('token', token, { maxAge: 86400000, httpOnly: true }); // Max age is in milliseconds (1 day)
         // Redirect the user to their own profile page with the JWT token embedded
-        res.redirect(`/profile?token=${token}`);
+        res.redirect(`/profile?email=${user.email}`);
     }
     catch (error) {
         console.error('Error during login:', error);
@@ -91,15 +93,11 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.loginUser = loginUser;
 const profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { token } = req.query;
-        if (!token || typeof token !== 'string') {
-            return res.status(400).json('Token parameter required');
+        const { email } = req.query;
+        if (!email || typeof email !== 'string') {
+            return res.status(400).json('Email parameter required');
         }
-        // Verify and decode the JWT token
-        const decodedToken = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY || '');
-        // Extract the user ID from the decoded token
-        const userId = decodedToken.userId;
-        const user = yield (0, getUser_1.getUserByToken)(userId);
+        const user = yield (0, getUser_1.getUser)(email);
         if (!user) {
             return res.status(404).json('User not found');
         }

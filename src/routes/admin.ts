@@ -12,23 +12,23 @@ import {
 const router = express.Router();
 
 // Display the admin dashboard
-router.get('/admin', showDashboard);
+router.get('/', showDashboard);
 
 // Display the form for adding a new question
-router.get('/admin/addQuestion', showAddQuestionForm);
+router.get('/addQuestion', showAddQuestionForm);
 
 // Handle the submission of a new question
-router.post('/admin/addQuestion', addQuestion);
+router.post('/addQuestion', addQuestion);
 
 // Display a list of existing questions
-router.get('/admin/questionList', showQuestionList);
+router.get('/questionList', showQuestionList);
 
-router.get('/admin/editQuestion/:questionId', editQuestion)
+router.get('/editQuestion/:questionId', editQuestion)
 
 // display the quiz form
-router.get('/admin/createQuiz', showQuizForm);
+router.get('/createQuiz', showQuizForm);
 
 // handle quiz creation
-router.post('/admin/createQuiz', createQuiz);
+router.post('/createQuiz', createQuiz);
 
 export default router;

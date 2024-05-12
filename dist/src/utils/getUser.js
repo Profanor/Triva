@@ -12,22 +12,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByToken = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+exports.getUser = void 0;
 const User_1 = __importDefault(require("../model/User"));
-const getUserByToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const getUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Verify and decode the JWT token
-        const decodedToken = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY || ''); // Verify the token using your secret key
-        // Extract the user ID from the decoded token
-        const userId = decodedToken.userId;
-        // Fetch the user by user ID
-        const user = yield User_1.default.findByPk(userId);
+        const user = yield User_1.default.findOne({ where: { email } });
         return user;
     }
     catch (error) {
-        console.error('Error retrieving user from the database:', error);
+        console.error('error retrieving user from the database:', error);
         throw error;
     }
 });
-exports.getUserByToken = getUserByToken;
+exports.getUser = getUser;
+// export const getUserByToken = async (token: string): Promise<User | null> => {
+//     try {
+//       // Verify and decode the JWT token
+//       const decodedToken: any = jwt.verify(token, process.env.SECRET_KEY || ''); // Verify the token using your secret key
+//       // Extract the user ID from the decoded token
+//       const userId = decodedToken.userId;
+//       console.log('DecodedToken is:', decodedToken);
+//       // Fetch the user by user ID
+//       const user = await User.findByPk(userId);
+//       return user;
+//     } catch(error) {
+//       console.error('Error retrieving user from the database:', error);
+//       throw error;
+//     }
+//   };
