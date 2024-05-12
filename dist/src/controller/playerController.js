@@ -49,6 +49,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const token = jsonwebtoken_1.default.sign({ userId: newUser.id, email: newUser.email }, key, { expiresIn: '1d' });
         res.redirect('/login');
         res.status(201).json({ message: 'User registered successfully', user: newUser, token });
+        console.log('New User:', newUser);
     }
     catch (error) {
         console.error('Error registering user:', error.message);
