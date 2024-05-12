@@ -30,13 +30,16 @@ export const addQuestion = async (req: Request, res: Response): Promise<void> =>
       difficulty: string;
     };
 
+    // Convert the difficulty to lowercase
+    const lowercasedDifficulty = difficulty.toLowerCase();
+
     // Check if a quiz with the specified difficulty exists
-    let quiz = await Quiz.findOne({ where: { difficulty } });
+    let quiz = await Quiz.findOne({ where: { difficulty: lowercasedDifficulty } });
 
     // If no quiz exists for the specified difficulty, create a new one
     if (!quiz) {
       const { timeLimit, difficulty } = req.body; 
-      quiz = await Quiz.create({ timeLimit, difficulty });
+      quiz = await Quiz.create({ timeLimit, difficulty: lowercasedDifficulty });
       
       if (!quiz) {
         res.status(500).json({ error: 'failed to create quiz' });
@@ -50,7 +53,7 @@ export const addQuestion = async (req: Request, res: Response): Promise<void> =>
       options,
       category,
       correctAnswer,
-      difficulty,
+      difficulty: lowercasedDifficulty,
     });
 
     console.log('Question created successfully:', newQuestion);

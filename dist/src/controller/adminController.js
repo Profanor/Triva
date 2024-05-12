@@ -35,12 +35,14 @@ const addQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         // Extract question details from the request body
         const { text, options, category, correctAnswer, difficulty } = req.body;
+        // Convert the difficulty to lowercase
+        const lowercasedDifficulty = difficulty.toLowerCase();
         // Check if a quiz with the specified difficulty exists
-        let quiz = yield Quiz_1.default.findOne({ where: { difficulty } });
+        let quiz = yield Quiz_1.default.findOne({ where: { difficulty: lowercasedDifficulty } });
         // If no quiz exists for the specified difficulty, create a new one
         if (!quiz) {
             const { timeLimit, difficulty } = req.body;
-            quiz = yield Quiz_1.default.create({ timeLimit, difficulty });
+            quiz = yield Quiz_1.default.create({ timeLimit, difficulty: lowercasedDifficulty });
             if (!quiz) {
                 res.status(500).json({ error: 'failed to create quiz' });
                 return;
@@ -52,7 +54,7 @@ const addQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             options,
             category,
             correctAnswer,
-            difficulty,
+            difficulty: lowercasedDifficulty,
         });
         console.log('Question created successfully:', newQuestion);
         res.redirect('/admin/createQuiz');
