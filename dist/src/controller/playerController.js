@@ -83,7 +83,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Set the token in a cookie
         res.cookie('token', token, { maxAge: 86400000, httpOnly: true }); // Max age is in milliseconds (1 day)
         // Redirect the user to their own profile page with the JWT token embedded
-        res.redirect(`/profile?email=${user.email}`);
+        res.redirect(`/users/profile?email=${user.email}`);
     }
     catch (error) {
         console.error('Error during login:', error);
