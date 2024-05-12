@@ -1,7 +1,7 @@
 import express from 'express';
-import authController from '../controller/authController';
+import { loginUser, registerUser } from '../controller/playerController';
 import { getQuestionsByDifficulty } from '../controller/quizTakingController';
-import { profile } from '../controller/authController'
+import { profile } from '../controller/playerController'
 import submitQuiz from '../controller/quizController';
 
 const router = express.Router();
@@ -10,13 +10,13 @@ const router = express.Router();
 router.get('/login', (req, res)=> {
   res.render('login', { title: 'Login' });  
 });
-router.post('/login', authController.loginUser)
+router.post('/login', loginUser)
 
 //route to render the signup view
 router.get('/signup', (req, res)=> {
   res.render('signup', { title: 'Sign Up' });  
 });
-router.post('/signup', authController.registerUser)
+router.post('/signup', registerUser)
 
 router.get('/profile', profile);
 

@@ -1,10 +1,8 @@
-import express, { Request, Response} from 'express';
-import authController from '../controller/authController';
+import express from 'express';
+import { logoutUser } from '../controller/playerController';
+
 const router = express.Router()
 
-router.all('/logout', (req: Request, res: Response) => {
-    authController.logoutUser(req, res);
-        res.redirect('/login');
-    });
+router.all('/logout',logoutUser);
 
 export default router;

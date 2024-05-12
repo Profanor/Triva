@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import Quiz from '../model/Quiz';
 import Question from '../model/Question';
 
@@ -29,8 +29,6 @@ export const addQuestion = async (req: Request, res: Response): Promise<void> =>
       correctAnswer: string;
       difficulty: string;
     };
-
-    console.log('Req body', req.body);
 
     // Check if a quiz with the specified difficulty exists
     let quiz = await Quiz.findOne({ where: { difficulty } });
@@ -68,7 +66,7 @@ export const addQuestion = async (req: Request, res: Response): Promise<void> =>
 };
 
 // logic for editing questions
-export const editQuestion = async (req: Request, res: Response): Promise<void> => {
+export const editQuestion = async (req: Request, res: Response) => {
   try {
     const { questionId } = req.params;
 
@@ -76,8 +74,8 @@ export const editQuestion = async (req: Request, res: Response): Promise<void> =
     const existingQuestion = await Question.findByPk(questionId);
 
     if(!existingQuestion) {
-      res.status(404).json({ error: 'Question not found' });
-      return;
+    return res.status(404).json({ error: 'Question not found' });
+      
     }
 
     // Convert options to an array if it's not already
@@ -107,15 +105,15 @@ export const editQuestion = async (req: Request, res: Response): Promise<void> =
 
 
 // Display a list of existing questions
-export const showQuestionList = async (req: Request, res: Response): Promise<void> => {
+export const showQuestionList = async (req: Request, res: Response) => {
   try {
-    // TODO: Fetch existing questions from the database
+     // Fetch existing questions from the database
     const questions = await Question.findAll();
 
     res.render('questionList', { title: 'Question List', questions });
   } catch (error) {
     console.error('Error fetching questions:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };
 
